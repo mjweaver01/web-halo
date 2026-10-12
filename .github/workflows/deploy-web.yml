@@ -1,0 +1,64 @@
+name: Deploy web
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "services/signaling/**"
+      - "docs/**"
+      - "**/*.md"
+      - ".github/workflows/ci.yml"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: halo-web-production
+  cancel-in-progress: false
+
+env:
+  EMSDK_VERSION: 6.0.12
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: services/web/package-lock.json
+      - name: Install Ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: Cache Emscripten SDK
+        id: emsdk-cache
+        uses: actions/cache@v4
+        with:
+          path: build/emsdk
+          key: emsdk-${{ runner.os }}-${{ env.EMSDK_VERSION }}
+      - name: Install Emscripten SDK
+        if: steps.emsdk-cache.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 https://github.com/emscripten-core/emsdk.git build/emsdk
+          build/emsdk/emsdk install "$EMSDK_VERSION"
+          build/emsdk/emsdk activate "$EMSDK_VERSION"
+      - run: npm ci
+        working-directory: services/web
+      # The menu images are Halo artwork, so they are not in Git. Take them
+      # from the current deployment. Refer to docs/self-hosting.md.
+      - name: Download UI images
+        run: python3 tools/web_fetch_ui_assets.py
+      - name: Build
+        run: |
+          source build/emsdk/emsdk_env.sh
+          python3 configure.py --release
+          ninja web
+      - name: Deploy
+        working-directory: services/web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npm run deploy

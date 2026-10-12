@@ -52,9 +52,22 @@ npm run deploy
 
 ## 4. Build and deploy the game
 
-Install Ninja and the Emscripten SDK. Then, from the repository root:
+The menu images in `port/web/assets/ui/` are Halo artwork, so they are not
+in Git. Each deployment serves them, so they can be taken from the live site:
 
 ```sh
+python3 tools/web_fetch_ui_assets.py
+```
+
+The script tries `halo-web.mjweaver01.workers.dev`, then
+`mitchellhynes.com/halo`, and fails if any image is missing. To use a
+different source, give `--source URL` (repeat it for fallbacks).
+
+Install Ninja and the Emscripten SDK (6.0.12) into `build/emsdk`. Then, from
+the repository root:
+
+```sh
+source build/emsdk/emsdk_env.sh
 python3 configure.py --release
 ninja web
 cd services/web
@@ -62,12 +75,19 @@ npm ci
 npm run deploy
 ```
 
-## 5. Continuous deployment (optional)
+## 5. Continuous deployment
 
-`.github/workflows/deploy.yml` deploys signaling on pushes to `main` that
-change `services/signaling`. Add the repository secrets `CLOUDFLARE_API_TOKEN`
-(Edit Cloudflare Workers permission) and `CLOUDFLARE_ACCOUNT_ID`. Until then,
-that workflow fails.
+Both deployments run in GitHub Actions with the repository secrets
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`:
+
+| Workflow | Runs when | Does |
+| --- | --- | --- |
+| `deploy.yml` | A push to `main` changes `services/signaling` | Tests and deploys the signaling Worker |
+| `deploy-web.yml` | Any other push to `main` that is not only documentation | Downloads the UI images from the live site, builds the game and deploys `halo-web` |
+
+The API token needs these account permissions: Workers Scripts (Edit),
+Workers KV Storage (Edit) and Account Settings
+(Read), plus the user permissions Memberships (Read) and User Details (Read).
 
 ## Pull changes from upstream
 
