@@ -23,7 +23,7 @@ npm run dev
 
 The deployed configuration permits these exact browser origins:
 
-- `https://halo-web.otherness-bugs.workers.dev`
+- `https://halo.mjweaver01.com`
 - `http://127.0.0.1:8765`
 - `http://localhost:8765`
 

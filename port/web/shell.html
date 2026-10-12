@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
-  <meta name="halo-signaling-url" content="https://halo-web-signaling.otherness-bugs.workers.dev">
+  <meta name="halo-signaling-url" content="https://halo-signal.mjweaver01.com">
   <meta name="halo-build-id" content="web-multiplayer-v1">
-  <meta name="halo-turnstile-sitekey" content="0x4AAAAAAFJKYJ-u47UliqDs">
+  <meta name="halo-turnstile-sitekey" content="REPLACE_WITH_TURNSTILE_SITE_KEY">
   <script src="coi-serviceworker.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
   <title>Halo: Combat Evolved</title>
@@ -1107,18 +1107,10 @@
     .about-card {
       position: relative;
       display: grid;
-      grid-template-columns: 4.2rem minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
       gap: .9rem;
       align-items: start;
       padding: 1.1rem 1.15rem;
-    }
-    .about-jester {
-      display: block;
-      width: 3.8rem;
-      height: auto;
-      margin-top: .1rem;
-      filter: drop-shadow(0 .45rem .7rem rgba(0, 0, 0, .42));
-      transform: rotate(-2deg);
     }
     .about-copy { min-width: 0; }
     .about-copy h2 {
@@ -1456,8 +1448,7 @@
         line-height: 1.2;
         white-space: normal;
       }
-      .about-card { grid-template-columns: 3.2rem minmax(0, 1fr); gap: .7rem; padding: .9rem; }
-      .about-jester { width: 2.9rem; }
+      .about-card { gap: .7rem; padding: .9rem; }
     }
   </style>
 </head>
@@ -1500,7 +1491,7 @@
             </div>
           </details>
         </div>
-        <span class="site-credit">Made by <a href="https://mitchellhynes.com/" target="_blank" rel="noopener noreferrer">Mitchell Hynes</a>. <button id="about-open" type="button">Learn more</button></span>
+        <span class="site-credit">Hosted by <a href="https://mjweaver01.com/" target="_blank" rel="noopener noreferrer">mjweaver01</a>. <button id="about-open" type="button">Learn more</button></span>
         <span id="footer-hint" class="hint">Click the game or Focus game to capture the mouse</span>
         <span id="isolation-warning"></span>
         <button id="logs" type="button" hidden>Diagnostics</button>
@@ -1611,8 +1602,6 @@
   <dialog id="about-dialog" aria-labelledby="about-title">
     <article class="about-card">
       <button id="about-close" class="icon-button" type="button" aria-label="Close">✕</button>
-      <img class="about-jester" src="assets/ui/shell/mitchell-jester-card.svg"
-           alt="Red Joker card from mitchellhynes.com">
       <div class="about-copy">
         <h2 id="about-title">About this web build</h2>
         <ul>
@@ -1621,7 +1610,9 @@
             and
             <a href="https://github.com/cybersecurity/halo-ce-universal" target="_blank" rel="noopener noreferrer">cybersecurity/halo-ce-universal</a>.
           </li>
-          <li>This web version is independently hosted and maintained by <a href="https://mitchellhynes.com/" target="_blank" rel="noopener noreferrer">Mitchell Hynes</a>. Those projects and contributors are not affiliated with or responsible for this website.</li>
+          <li>The browser port is by <a href="https://mitchellhynes.com/" target="_blank" rel="noopener noreferrer">Mitchell Hynes</a>
+            (<a href="https://github.com/ecumene/web-halo" target="_blank" rel="noopener noreferrer">ecumene/web-halo</a>).</li>
+          <li>This copy is independently hosted and maintained by <a href="https://mjweaver01.com/" target="_blank" rel="noopener noreferrer">mjweaver01</a>. Those projects and contributors are not affiliated with or responsible for this website.</li>
         </ul>
       </div>
     </article>

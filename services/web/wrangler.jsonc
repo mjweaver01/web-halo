@@ -4,6 +4,9 @@
   "main": "src/index.js",
   "compatibility_date": "2026-09-29",
   "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    { "pattern": "halo.mjweaver01.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "../../build/cloudflare-web",
     "binding": "ASSETS",
