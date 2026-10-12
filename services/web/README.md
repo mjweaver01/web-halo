@@ -6,7 +6,7 @@ Players choose an XISO made from their own Xbox disc; the browser validates the
 image and stores only the required maps in origin-private local storage.
 
 The current deployment is
-[halo-web.REPLACE_WITH_SUBDOMAIN.workers.dev](https://halo-web.REPLACE_WITH_SUBDOMAIN.workers.dev/).
+[halo-web.mjweaver01.workers.dev](https://halo-web.mjweaver01.workers.dev/).
 Do not add proprietary Halo game data to Static Assets, R2, or this repository.
 
 Build and validate from the repository root:

@@ -2,42 +2,36 @@
 
 This fork deploys two Cloudflare Workers:
 
-| Worker | Directory | Hostname |
+| Worker | Directory | URL |
 | --- | --- | --- |
-| `halo-web` (game files and telemetry) | `services/web` | `halo-web.<subdomain>.workers.dev` |
-| `halo-web-signaling` (lobbies and WebRTC signaling) | `services/signaling` | `halo-web-signaling.<subdomain>.workers.dev` |
+| `halo-web` (game files and telemetry) | `services/web` | https://halo-web.mjweaver01.workers.dev |
+| `halo-web-signaling` (lobbies and WebRTC signaling) | `services/signaling` | https://halo-web-signaling.mjweaver01.workers.dev |
 
 The game must be at the root of its own hostname, because the client sends
 telemetry to `/v1/...` paths. No Halo game data is hosted. Each player
 supplies their own XISO.
 
-## 1. Get the workers.dev subdomain
+## 1. Cloudflare resources
 
-Everything runs on free `workers.dev` addresses. No custom domain or DNS
-change is necessary. Create a free Cloudflare account, then:
+These already exist in the Cloudflare account and are set in the repository:
+
+| Resource | Value | Where it is used |
+| --- | --- | --- |
+| Account ID | `4303a98c4737bbefefd029227c5e1b7b` | `services/signaling/wrangler.jsonc` |
+| `workers.dev` subdomain | `mjweaver01` | Hostnames in `wrangler.jsonc`, `port/web/shell.html`, `tools/halo_telemetry.mjs` |
+| KV namespace `HALO_ABUSE` | `b4729df09aed488ea0515d28f62815ae` | `services/signaling/wrangler.jsonc` |
+| Turnstile widget `halo-web` | site key `0x4AAAAAAFUx_dZRGjdOL3lX` | `port/web/shell.html` |
+| Analytics Engine | enabled in the dashboard (Workers > Analytics Engine) | Both Workers |
+
+To deploy from a different account, change these values, then run
+`npm run types` in `services/signaling`. Create the KV namespace with
+`npx wrangler kv namespace create HALO_ABUSE`.
+
+## 2. Log in
 
 ```sh
 npx wrangler login
-npx wrangler whoami                                  # shows the account ID
 ```
-
-The dashboard shows the account's `workers.dev` subdomain under
-Workers & Pages (the first deployment asks you to choose one if none exists).
-
-## 2. Fill the placeholders
-
-```sh
-cd services/signaling && npx wrangler kv namespace create HALO_ABUSE
-```
-
-| Placeholder | File | Value |
-| --- | --- | --- |
-| `REPLACE_WITH_SUBDOMAIN` | `services/signaling/wrangler.jsonc`, `port/web/shell.html`, `tools/halo_telemetry.mjs`, READMEs | The `workers.dev` subdomain |
-| `REPLACE_WITH_CLOUDFLARE_ACCOUNT_ID` | `services/signaling/wrangler.jsonc` | Account ID |
-| `REPLACE_WITH_HALO_ABUSE_KV_ID` | `services/signaling/wrangler.jsonc` | ID of the new KV namespace |
-| `REPLACE_WITH_TURNSTILE_SITE_KEY` | `port/web/shell.html` | Site key of a Turnstile widget for `halo-web.<subdomain>.workers.dev` (Dashboard > Turnstile > Add widget) |
-
-After you edit `wrangler.jsonc`, run `npm run types` in `services/signaling`.
 
 ## 3. Deploy signaling
 
