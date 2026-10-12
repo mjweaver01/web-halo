@@ -1,7 +1,7 @@
 # Halo: Combat Evolved for Linux, Windows and Android
 
 > This repository is the source-only home of the independently hosted browser
-> version at [halo.mjweaver01.com](https://halo.mjweaver01.com), a fork of
+> version at [halo-web.REPLACE_WITH_SUBDOMAIN.workers.dev](https://halo-web.REPLACE_WITH_SUBDOMAIN.workers.dev), a fork of
 > [ecumene/web-halo](https://github.com/ecumene/web-halo). To deploy it, see
 > [docs/self-hosting.md](docs/self-hosting.md). It does
 > not include proprietary Halo game data, generated web builds, deployment
@@ -65,7 +65,7 @@ On Android:
 ### Play in a browser (experimental)
 
 The public multiplayer build is available at
-[halo.mjweaver01.com](https://halo.mjweaver01.com).
+[halo-web.REPLACE_WITH_SUBDOMAIN.workers.dev](https://halo-web.REPLACE_WITH_SUBDOMAIN.workers.dev).
 To comply with copyright law and respect the original Halo CE decompilation team, the site
 does not host or transmit Halo game data. On first use, choose an XISO made from
 your own Xbox copy. The browser validates it locally, copies only the required

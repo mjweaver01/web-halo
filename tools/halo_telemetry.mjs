@@ -2,7 +2,7 @@
 
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || "bea51ed443abd5b18e9e56723daa7a79";
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
-const SIGNALING_URL = process.env.HALO_SIGNALING_URL || "https://halo-signal.mjweaver01.com";
+const SIGNALING_URL = process.env.HALO_SIGNALING_URL || "https://halo-web-signaling.REPLACE_WITH_SUBDOMAIN.workers.dev";
 const ADMIN_TOKEN = process.env.HALO_ADMIN_TOKEN;
 
 function required(value, name) {

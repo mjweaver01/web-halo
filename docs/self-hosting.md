@@ -4,33 +4,38 @@ This fork deploys two Cloudflare Workers:
 
 | Worker | Directory | Hostname |
 | --- | --- | --- |
-| `halo-web` (game files and telemetry) | `services/web` | `halo.mjweaver01.com` |
-| `halo-web-signaling` (lobbies and WebRTC signaling) | `services/signaling` | `halo-signal.mjweaver01.com` |
+| `halo-web` (game files and telemetry) | `services/web` | `halo-web.<subdomain>.workers.dev` |
+| `halo-web-signaling` (lobbies and WebRTC signaling) | `services/signaling` | `halo-web-signaling.<subdomain>.workers.dev` |
 
 The game must be at the root of its own hostname, because the client sends
 telemetry to `/v1/...` paths. No Halo game data is hosted. Each player
 supplies their own XISO.
 
-## 1. Put the domain on Cloudflare
+## 1. Get the workers.dev subdomain
 
-Workers custom domains need the zone on Cloudflare DNS. Add `mjweaver01.com`
-to Cloudflare and change the nameservers at the registrar to the ones that
-Cloudflare gives. Both `routes` entries in the `wrangler.jsonc` files create
-their DNS records and certificates during deployment.
-
-## 2. Fill the placeholders
+Everything runs on free `workers.dev` addresses. No custom domain or DNS
+change is necessary. Create a free Cloudflare account, then:
 
 ```sh
 npx wrangler login
 npx wrangler whoami                                  # shows the account ID
+```
+
+The dashboard shows the account's `workers.dev` subdomain under
+Workers & Pages (the first deployment asks you to choose one if none exists).
+
+## 2. Fill the placeholders
+
+```sh
 cd services/signaling && npx wrangler kv namespace create HALO_ABUSE
 ```
 
 | Placeholder | File | Value |
 | --- | --- | --- |
+| `REPLACE_WITH_SUBDOMAIN` | `services/signaling/wrangler.jsonc`, `port/web/shell.html`, `tools/halo_telemetry.mjs`, READMEs | The `workers.dev` subdomain |
 | `REPLACE_WITH_CLOUDFLARE_ACCOUNT_ID` | `services/signaling/wrangler.jsonc` | Account ID |
 | `REPLACE_WITH_HALO_ABUSE_KV_ID` | `services/signaling/wrangler.jsonc` | ID of the new KV namespace |
-| `REPLACE_WITH_TURNSTILE_SITE_KEY` | `port/web/shell.html` | Site key of a Turnstile widget for `halo.mjweaver01.com` (Dashboard > Turnstile > Add widget) |
+| `REPLACE_WITH_TURNSTILE_SITE_KEY` | `port/web/shell.html` | Site key of a Turnstile widget for `halo-web.<subdomain>.workers.dev` (Dashboard > Turnstile > Add widget) |
 
 After you edit `wrangler.jsonc`, run `npm run types` in `services/signaling`.
 
