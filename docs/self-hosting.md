@@ -23,9 +23,9 @@ These already exist in the Cloudflare account and are set in the repository:
 | Resource | Value | Where it is used |
 | --- | --- | --- |
 | Account ID | `4303a98c4737bbefefd029227c5e1b7b` | `services/signaling/wrangler.jsonc` |
-| `workers.dev` subdomain | `mjweaver01` | Hostnames in `wrangler.jsonc`, `port/web/shell.html`, `tools/halo_telemetry.mjs` |
+| `workers.dev` subdomain | `mjweaver01` | Signaling hostname in `port/web/shell.html` and `tools/halo_telemetry.mjs` |
 | KV namespace `HALO_ABUSE` | `b4729df09aed488ea0515d28f62815ae` | `services/signaling/wrangler.jsonc` |
-| Turnstile widget `halo-web` | site key `0x4AAAAAAFUx_dZRGjdOL3lX`; domains `halo.mjweaver01.com`, `halo-web-mjweaver01.pages.dev`, `halo-web.mjweaver01.workers.dev` | `port/web/shell.html` |
+| Turnstile widget `halo-web` | site key `0x4AAAAAAFUx_dZRGjdOL3lX`; domains `halo.mjweaver01.com` and `halo-web-mjweaver01.pages.dev` | `port/web/shell.html` |
 | Analytics Engine | enabled in the dashboard (Workers > Analytics Engine) | Both projects |
 
 To deploy from a different account, change these values, then run

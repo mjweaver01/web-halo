@@ -5,8 +5,7 @@
   "scripts": {
     "check": "npm run stage",
     "deploy": "npm run stage && cd pages && wrangler pages deploy --branch main",
-    "stage": "python3 ../../tools/web_stage_cloudflare.py && cp src/index.js ../../build/cloudflare-web/_worker.js && cp pages/_routes.json ../../build/cloudflare-web/_routes.json",
-    "deploy:worker": "python3 ../../tools/web_stage_cloudflare.py && wrangler deploy"
+    "stage": "python3 ../../tools/web_stage_cloudflare.py && cp src/index.js ../../build/cloudflare-web/_worker.js && cp pages/_routes.json ../../build/cloudflare-web/_routes.json"
   },
   "devDependencies": {
     "wrangler": "4.143.0"

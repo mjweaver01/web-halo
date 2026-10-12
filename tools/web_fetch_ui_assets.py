@@ -17,7 +17,6 @@ WEB_DIR = REPOSITORY / "port" / "web"
 DEFAULT_SOURCES = [
     "https://halo.mjweaver01.com",
     "https://halo-web-mjweaver01.pages.dev",
-    "https://halo-web.mjweaver01.workers.dev",
     "https://mitchellhynes.com/halo",
 ]
 IMAGE_SIGNATURES = (b"\x89PNG\r\n\x1a\n", b"\xff\xd8\xff")
