@@ -9,7 +9,7 @@ const shell = fs.readFileSync(path.join(repository, 'port', 'web', 'shell.html')
 const buildRules = fs.readFileSync(path.join(repository, 'tools', 'web_build.py'), 'utf8');
 const stage = fs.readFileSync(path.join(repository, 'tools', 'web_stage_cloudflare.py'), 'utf8');
 const worker = fs.readFileSync(path.join(repository, 'services', 'web', 'src', 'index.js'), 'utf8');
-const wrangler = fs.readFileSync(path.join(repository, 'services', 'web', 'wrangler.jsonc'), 'utf8');
+const wrangler = fs.readFileSync(path.join(repository, 'services', 'web', 'pages', 'wrangler.jsonc'), 'utf8');
 
 assert.match(shell, /id="xiso-dialog"[\s\S]*comply with copyright law[\s\S]*does not provide Halo game data[\s\S]*discord\.gg\/DQRgPUq6B8/,
   'the first-run gate must explain the lawful local-disc requirement');

@@ -20,7 +20,7 @@ const webOnlineUi = fs.readFileSync(
 const worker = fs.readFileSync(
   path.join(repository, 'services', 'web', 'src', 'index.js'), 'utf8');
 const wrangler = fs.readFileSync(
-  path.join(repository, 'services', 'web', 'wrangler.jsonc'), 'utf8');
+  path.join(repository, 'services', 'web', 'pages', 'wrangler.jsonc'), 'utf8');
 const stageCloudflare = fs.readFileSync(
   path.join(repository, 'tools', 'web_stage_cloudflare.py'), 'utf8');
 
