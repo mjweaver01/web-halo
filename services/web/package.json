@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "check": "npm run stage && wrangler deploy --dry-run --outdir .wrangler/dry-run",
-    "deploy": "npm run stage && wrangler deploy",
-    "stage": "python3 ../../tools/web_stage_cloudflare.py"
+    "check": "npm run stage",
+    "deploy": "npm run stage && cd pages && wrangler pages deploy --branch main",
+    "stage": "python3 ../../tools/web_stage_cloudflare.py && cp src/index.js ../../build/cloudflare-web/_worker.js && cp pages/_routes.json ../../build/cloudflare-web/_routes.json",
+    "deploy:worker": "python3 ../../tools/web_stage_cloudflare.py && wrangler deploy"
   },
   "devDependencies": {
     "wrangler": "4.143.0"

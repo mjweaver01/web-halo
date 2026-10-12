@@ -1,11 +1,16 @@
 # Self-hosting
 
-This fork deploys two Cloudflare Workers:
+This fork deploys to Cloudflare:
 
-| Worker | Directory | URL |
+| Project | Directory | URL |
 | --- | --- | --- |
-| `halo-web` (game files and telemetry) | `services/web` | https://halo-web.mjweaver01.workers.dev |
-| `halo-web-signaling` (lobbies and WebRTC signaling) | `services/signaling` | https://halo-web-signaling.mjweaver01.workers.dev |
+| Pages project `halo-web-mjweaver01` (game files; `src/index.js` runs as `_worker.js` for telemetry) | `services/web` | https://halo.mjweaver01.com |
+| Worker `halo-web-signaling` (lobbies and WebRTC signaling) | `services/signaling` | https://halo-web-signaling.mjweaver01.workers.dev |
+
+The DNS of `mjweaver01.com` stays at GoDaddy. A Pages project, unlike a
+Worker, accepts a custom subdomain from another DNS provider, so GoDaddy has
+one record: `CNAME halo -> halo-web-mjweaver01.pages.dev`. The custom domain
+is attached in the Pages project (Custom domains).
 
 The game must be at the root of its own hostname, because the client sends
 telemetry to `/v1/...` paths. No Halo game data is hosted. Each player
@@ -20,8 +25,8 @@ These already exist in the Cloudflare account and are set in the repository:
 | Account ID | `4303a98c4737bbefefd029227c5e1b7b` | `services/signaling/wrangler.jsonc` |
 | `workers.dev` subdomain | `mjweaver01` | Hostnames in `wrangler.jsonc`, `port/web/shell.html`, `tools/halo_telemetry.mjs` |
 | KV namespace `HALO_ABUSE` | `b4729df09aed488ea0515d28f62815ae` | `services/signaling/wrangler.jsonc` |
-| Turnstile widget `halo-web` | site key `0x4AAAAAAFUx_dZRGjdOL3lX` | `port/web/shell.html` |
-| Analytics Engine | enabled in the dashboard (Workers > Analytics Engine) | Both Workers |
+| Turnstile widget `halo-web` | site key `0x4AAAAAAFUx_dZRGjdOL3lX`; domains `halo.mjweaver01.com`, `halo-web-mjweaver01.pages.dev`, `halo-web.mjweaver01.workers.dev` | `port/web/shell.html` |
+| Analytics Engine | enabled in the dashboard (Workers > Analytics Engine) | Both projects |
 
 To deploy from a different account, change these values, then run
 `npm run types` in `services/signaling`. Create the KV namespace with
@@ -59,8 +64,7 @@ in Git. Each deployment serves them, so they can be taken from the live site:
 python3 tools/web_fetch_ui_assets.py
 ```
 
-The script tries `halo-web.mjweaver01.workers.dev`, then
-`mitchellhynes.com/halo`, and fails if any image is missing. To use a
+The script tries this site's addresses, then `mitchellhynes.com/halo`, and fails if any image is missing. To use a
 different source, give `--source URL` (repeat it for fallbacks).
 
 Install Ninja and the Emscripten SDK (6.0.12) into `build/emsdk`. Then, from
@@ -83,9 +87,9 @@ Both deployments run in GitHub Actions with the repository secrets
 | Workflow | Runs when | Does |
 | --- | --- | --- |
 | `deploy.yml` | A push to `main` changes `services/signaling` | Tests and deploys the signaling Worker |
-| `deploy-web.yml` | Any other push to `main` that is not only documentation | Downloads the UI images from the live site, builds the game and deploys `halo-web` |
+| `deploy-web.yml` | Any other push to `main` that is not only documentation | Downloads the UI images from the live site, builds the game and deploys the Pages project |
 
-The API token needs these account permissions: Workers Scripts (Edit),
+The API token needs these account permissions: Cloudflare Pages (Edit), Workers Scripts (Edit),
 Workers KV Storage (Edit) and Account Settings
 (Read), plus the user permissions Memberships (Read) and User Details (Read).
 

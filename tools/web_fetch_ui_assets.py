@@ -15,6 +15,8 @@ from pathlib import Path
 REPOSITORY = Path(__file__).resolve().parent.parent
 WEB_DIR = REPOSITORY / "port" / "web"
 DEFAULT_SOURCES = [
+    "https://halo.mjweaver01.com",
+    "https://halo-web-mjweaver01.pages.dev",
     "https://halo-web.mjweaver01.workers.dev",
     "https://mitchellhynes.com/halo",
 ]

@@ -1,12 +1,14 @@
 # Halo browser hosting
 
-This package publishes the browser build with Cloudflare Workers Static Assets
+This package publishes the browser build to the Cloudflare Pages project
+`halo-web-mjweaver01`. `src/index.js` runs as the Pages `_worker.js` for the
+`/v1/*` telemetry routes (see `pages/_routes.json`)
 and records Analytics Engine telemetry. It does not serve Halo map data.
 Players choose an XISO made from their own Xbox disc; the browser validates the
 image and stores only the required maps in origin-private local storage.
 
 The current deployment is
-[halo-web.mjweaver01.workers.dev](https://halo-web.mjweaver01.workers.dev/).
+[halo.mjweaver01.com](https://halo.mjweaver01.com/).
 Do not add proprietary Halo game data to Static Assets, R2, or this repository.
 
 Build and validate from the repository root:

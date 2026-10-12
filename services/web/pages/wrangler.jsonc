@@ -1,0 +1,23 @@
+{
+  // Cloudflare Pages project. Pages, unlike a Worker, accepts a custom
+  // subdomain whose DNS is not on Cloudflare (a CNAME at the registrar).
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "halo-web-mjweaver01",
+  "pages_build_output_dir": "../../../build/cloudflare-web",
+  "compatibility_date": "2026-09-29",
+  "compatibility_flags": ["nodejs_compat"],
+  "analytics_engine_datasets": [
+    {
+      "binding": "PERFORMANCE_TELEMETRY",
+      "dataset": "halo_web_performance"
+    },
+    {
+      "binding": "CAMPAIGN_TELEMETRY",
+      "dataset": "halo_web_campaign_loads"
+    },
+    {
+      "binding": "RUNTIME_TELEMETRY",
+      "dataset": "halo_web_runtime"
+    }
+  ]
+}
