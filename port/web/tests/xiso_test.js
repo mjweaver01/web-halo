@@ -164,6 +164,39 @@ async function main() {
 
   const invalid = new Blob([new Uint8Array(0x12000)]);
   await assert.rejects(HaloXiso.readCatalog(invalid), /not an Xbox XDVDFS disc image/i);
+
+  // A private https:// link is read with range requests only.
+  const remoteBytes = new Uint8Array(await haloXiso().arrayBuffer());
+  const requests = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, options) => {
+    const range = options.headers.Range;
+    requests.push({ url, range, credentials: options.credentials });
+    const [start, end] = range.replace('bytes=', '').split('-').map(Number);
+    return new Response(remoteBytes.slice(start, end + 1), {
+      status: 206,
+      headers: { 'Content-Range': `bytes ${start}-${end}/${remoteBytes.length}` },
+    });
+  };
+  try {
+    const remote = await HaloXiso.openRemoteImage('https://files.example/private/halo.iso?token=x');
+    assert.equal(remote.size, remoteBytes.length);
+    assert.equal(remote.name, 'halo.iso');
+    const remoteResult = await HaloXiso.install(remote, () => {});
+    assert.equal(remoteResult.mapCount, HaloXiso.REQUIRED_MAPS.length);
+    assert(requests.every(request => /^bytes=\d+-\d+$/.test(request.range)),
+      'every remote read must be a bounded range request');
+    assert(requests.every(request => request.credentials === 'omit'));
+    assert(requests.every(request => request.url === 'https://files.example/private/halo.iso?token=x'));
+
+    await assert.rejects(HaloXiso.openRemoteImage('http://files.example/halo.iso'), /https:\/\//);
+    await assert.rejects(HaloXiso.openRemoteImage('not a link'), /not a valid link/);
+    globalThis.fetch = async () => new Response('whole file', { status: 200 });
+    await assert.rejects(HaloXiso.openRemoteImage('https://files.example/halo.iso'),
+      /answered 200[\s\S]*range requests/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 }
 
 main().then(() => console.log('browser XISO tests passed'));

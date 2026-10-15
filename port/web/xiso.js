@@ -437,6 +437,88 @@
     return new Response(file, { status: 200, headers });
   }
 
+  /* A Blob-like view of an XISO at an https:// link that the player gives.
+   * Each slice is one HTTP range request, so only the catalog and the
+   * required maps are downloaded. The link is not stored. The host must
+   * allow this origin (CORS), answer range requests with 206 and expose
+   * Content-Range. */
+  const REMOTE_ATTEMPTS = 3;
+
+  async function fetchRange(url, start, end) {
+    if (end <= start) return new ArrayBuffer(0);
+    let lastError = null;
+    for (let attempt = 0; attempt < REMOTE_ATTEMPTS; attempt++) {
+      let response;
+      try {
+        response = await fetch(url, {
+          headers: { Range: `bytes=${start}-${end - 1}` },
+          cache: "no-store",
+          credentials: "omit",
+          referrerPolicy: "no-referrer",
+        });
+      } catch (error) {
+        lastError = error;
+        continue;
+      }
+      if (response.status >= 500) {
+        lastError = new XisoError(`The XISO host answered ${response.status}.`);
+        continue;
+      }
+      if (response.status !== 206) {
+        throw new XisoError(
+          `The XISO host answered ${response.status}. The link must allow range requests.`);
+      }
+      const bytes = await response.arrayBuffer();
+      if (bytes.byteLength !== end - start) {
+        throw new XisoError("The XISO host returned an incomplete range.");
+      }
+      return bytes;
+    }
+    if (lastError instanceof XisoError) throw lastError;
+    throw new XisoError(
+      "Could not download from the XISO link. Check the link, and that its host allows this website (CORS).");
+  }
+
+  async function openRemoteImage(link) {
+    let url;
+    try {
+      url = new URL(link);
+    } catch (_error) {
+      throw new XisoError("That is not a valid link.");
+    }
+    if (url.protocol !== "https:") throw new XisoError("Use an https:// link to your XISO.");
+    let response;
+    try {
+      response = await fetch(url.href, {
+        headers: { Range: "bytes=0-0" },
+        cache: "no-store",
+        credentials: "omit",
+        referrerPolicy: "no-referrer",
+      });
+    } catch (_error) {
+      throw new XisoError(
+        "Could not reach the XISO link. Its host must allow this website (CORS).");
+    }
+    if (response.status !== 206) {
+      throw new XisoError(
+        `The XISO host answered ${response.status}. The link must allow range requests.`);
+    }
+    try { await response.arrayBuffer(); } catch (_error) {}
+    const size = Number(((response.headers.get("Content-Range") || "").split("/")[1]) || NaN);
+    if (!Number.isSafeInteger(size) || size <= 0) {
+      throw new XisoError(
+        "The XISO host must expose the Content-Range header to this website (CORS).");
+    }
+    const name = decodeURIComponent(url.pathname.split("/").pop() || "") || "XISO link";
+    return Object.freeze({
+      name,
+      size,
+      slice(start, end) {
+        return { arrayBuffer: () => fetchRange(url.href, start, end) };
+      },
+    });
+  }
+
   const api = Object.freeze({
     COPY_CHUNK_SIZE,
     REQUIRED_MAPS,
@@ -444,6 +526,7 @@
     formatBytes,
     install,
     isInstalled,
+    openRemoteImage,
     parseRange,
     readCatalog,
     responseForMapRequest,
